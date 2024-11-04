@@ -1,0 +1,56 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "${default}",
+                "limitSymbolsToIncludedHeaders": false
+            },
+            "includePath": [
+                "/home/chiba/ros2_ws/install/tutorial_interfaces/include/**",
+                "/home/chiba/ros2_ws/install/ros2_rs_interfaces/include/**",
+                "/opt/ros/humble/include/**",
+                "/home/chiba/ros2_ws/src/pcd_load/include/**",
+                "/home/chiba/ros2_ws/src/rfl_int_img/include/**",
+                "/home/chiba/ros2_ws/src/rfl_intensity_img/include/**",
+                "/home/chiba/ros2_ws/src/ros2_rs_container_detector_2023/include/**",
+                "/home/chiba/ros2_ws/src/ros2_rs_crosswalk_signal/include/**",
+                "/home/chiba/ros2_ws/src/ros2_rs_hsv_visualization/include/**",
+                "/home/chiba/ros2_ws/src/ros2_rs_launcher_2023/include/**",
+                "/home/chiba/ros2_ws/src/ros2_rs_launcher_signal_2023/include/**",
+                "/home/chiba/ros2_ws/src/ros2_rs_logger_2023/include/**",
+                "/home/chiba/ros2_ws/src/ros2_rs_signal_reco_2023/include/**",
+                "/home/chiba/ros2_ws/src/ros2_rs_signal_test_2023/include/**",
+                "/home/chiba/ros2_ws/src/ros2_rs_traffic_signal_2024/include/**",
+                "/home/chiba/ros2_ws/src/signal_subscribe/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_interfaces/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_interfaces2/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_launch/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_opencv/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_opencv02/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_opencv_launch/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_opencv_launch02/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_package/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_parameter/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_parameter02/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_service/include/**",
+                "/home/chiba/ros2_ws/src/tutorial_topic/include/**",
+                "/usr/include/**",
+                "${workspaceFolder}/include",
+                "/opt/ros/humble/include/rclcpp",
+                "/home/chiba/ros2_ws/install/ros2_rs_interfaces/include/ros2_rs_interfaces",
+                "/opt/ros/humble/include/rcl",
+                "/usr/include/boost/lexical_cast/detail",
+                "/opt/ros/humble/include/rcutils",
+                "/opt/ros/humble/include/cv_bridge",
+                "/opt/ros/humble/include/rclcpp_components",
+                "/opt/ros/humble/include/rmw"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "c++14"
+        }
+    ],
+    "version": 4
+}

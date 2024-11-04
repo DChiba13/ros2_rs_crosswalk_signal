@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>ros2_rs_crosswalk_signal</name>
+  <version>0.0.0</version>
+  <description>This is a ROS2 package for signal recognition at a crossing, developed for the Tsukuba Challenge.</description>
+  <maintainer email="t241b054@gunma-u.ac.jp">Daiki Chiba</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>lib_opencv-dev</depend>
+  <depend>cv_bridge</depend>
+  <depend>sensor_msgs</depend>
+  <depend>rclcpp_components</depend>
+  <depend>ros2_rs_interfaces</depend>
+  <depend>rs_common</depend>
+  <depend>libfmt-dev</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

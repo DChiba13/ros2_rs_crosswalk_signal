@@ -1,0 +1,52 @@
+crosswalk_signal:
+  ros__parameters:
+    camera_path: "/dev/video0"
+    # 画像の信号認識する範囲を限定[%]
+    IMG_TOP_EDGE_RATIO : 0.1
+    # IMG_TOP_EDGE_RATIO : 0.0
+    IMG_BOTTOM_EDGE_RATIO : 0.33
+    # IMG_BOTTOM_EDGE_RATIO : 0.4
+    IMG_LEFT_EDGE_RATIO : 0.10
+    # IMG_LEFT_EDGE_RATIO : 0.0
+    IMG_RIGHT_EDGE_RATIO : 0.90
+    # IMG_RIGHT_EDGE_RATIO : 1.0
+    # HSVの閾値
+    MIN_H_RED_01 : 1
+    MAX_H_RED_01 : 10
+    MIN_H_RED_02 : 165
+    MAX_H_RED_02 : 180
+    MIN_S_RED : 40
+    MAX_S_RED : 255
+    MIN_V_RED : 40
+    MAX_V_RED : 255
+
+    MIN_H_GREEN : 60
+    MAX_H_GREEN : 100
+    MIN_S_GREEN : 35
+    MAX_S_GREEN : 255
+    MIN_V_GREEN : 40
+    MAX_V_GREEN : 255
+
+    MIN_H_YELLOW : 5
+    MAX_H_YELLOW : 60
+    MIN_S_YELLOW : 40
+    MAX_S_YELLOW : 255
+    MIN_V_YELLOW : 145
+    MAX_V_YELLOW : 255
+
+    # IMAGE_THRESHフレーム連続で赤、青が認識されると信号とみなす
+    RED_IMAGE_THRESH : 0
+    GREEN_IMAGE_THRESH : 0
+    # 信号の候補領域のピクセル数の閾値
+    MIN_PIX_NUM : 250
+    MAX_PIX_NUM : 1000
+    # 信号の候補領域のアスペクト比の閾値
+    # 横 : 縦 = ASPECT_RATIO : 1
+    MIN_ASPECT_RATIO : 0.8
+    MAX_ASPECT_RATIO : 1.2
+    # 候補領域内の黄色画素ピクセル数の閾値
+    YELLOW_PIX_TH : 25
+    # 候補領域内の黄色画素ピクセルのアスペクト比の閾値
+    # 横 : 縦 = ASPECT_RATIO : 1
+    MIN_YELLOW_ASPECT_RATIO : 0.200
+    MAX_YELLOW_ASPECT_RATIO : 1.2

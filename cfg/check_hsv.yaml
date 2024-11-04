@@ -1,0 +1,24 @@
+check_hsv:
+  ros__parameters:
+    MIN_H_RED_01 : 1
+    MAX_H_RED_01 : 10
+    MIN_H_RED_02 : 165
+    MAX_H_RED_02 : 180
+    MIN_S_RED : 40
+    MAX_S_RED : 255
+    MIN_V_RED : 40
+    MAX_V_RED : 255
+
+    MIN_H_GREEN : 60
+    MAX_H_GREEN : 100
+    MIN_S_GREEN : 35
+    MAX_S_GREEN : 255
+    MIN_V_GREEN : 35
+    MAX_V_GREEN : 255
+
+    MIN_H_YELLOW : 5
+    MAX_H_YELLOW : 60
+    MIN_S_YELLOW : 40
+    MAX_S_YELLOW : 255
+    MIN_V_YELLOW : 145
+    MAX_V_YELLOW : 255
