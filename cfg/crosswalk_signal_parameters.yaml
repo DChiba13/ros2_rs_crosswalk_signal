@@ -27,9 +27,10 @@ crosswalk_signal:
     MIN_V_GREEN : 40
     MAX_V_GREEN : 255
 
-    MIN_H_YELLOW : 5
+    MIN_H_YELLOW : 0
     MAX_H_YELLOW : 60
-    MIN_S_YELLOW : 40
+    # MIN_S_YELLOW : 40
+    MIN_S_YELLOW : 0
     MAX_S_YELLOW : 255
     MIN_V_YELLOW : 145
     MAX_V_YELLOW : 255

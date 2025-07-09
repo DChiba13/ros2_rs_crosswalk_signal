@@ -172,11 +172,11 @@ void Recognition::createCandidateArea(Mat &camera, const Mat &stats, vector<int>
     }
     if(color_type == "red"){
       cv::rectangle(camera, cv::Rect(left[label] + img_left, top[label] + img_top, width[label], height[label]), cv::Scalar(255, 0, 255),2);
-      cv::rectangle(extract_red, cv::Rect(left[label] + img_left, top[label] + img_top, width[label], height[label]), cv::Scalar(255, 0, 255),2);
+      // cv::rectangle(extract_red, cv::Rect(left[label] + img_left, top[label] + img_top, width[label], height[label]), cv::Scalar(255, 0, 255),2);
     }
     else if(color_type == "green"){
       cv::rectangle(camera, cv::Rect(left[label] + img_left, top[label] + img_top, width[label], height[label]), cv::Scalar(255, 255, 0),2);
-      cv::rectangle(extract_green, cv::Rect(left[label] + img_left, top[label] + img_top, width[label], height[label]), cv::Scalar(255, 255, 0),2);
+      // cv::rectangle(extract_green, cv::Rect(left[label] + img_left, top[label] + img_top, width[label], height[label]), cv::Scalar(255, 255, 0),2);
     }
   }
 }
@@ -217,6 +217,7 @@ void Recognition::extractYellowInBlob(Mat &rgb, int num_labels, const vector<int
         }
       }
     }
+    cv::imshow("extract_yellow", extract_yellow);
 
     cv::Mat bin_img_yellow = cv::Mat::zeros(blob_hsv.size(), CV_8UC1);
     binalizeImage(extract_yellow, bin_img_yellow);
@@ -233,8 +234,8 @@ void Recognition::extractYellowInBlob(Mat &rgb, int num_labels, const vector<int
       // cv::rectangle(bin_img_yellow, cv::Rect(yellow_left, yellow_top, yellow_width, yellow_height), cv::Scalar(256/2), 2);
       // cv::imshow("bin_img_yellow", bin_img_yellow);
       if (isRedSignal){
-        // cout << "yellow_pix_cnt[red]["<< label << "]: " << yellow_pix_cnt << endl;
-        // cout << "aspect_ratio_yellow[red]["<< label << "]: "<< aspect_ratio_yellow << endl;
+        cout << "yellow_pix_cnt[red]["<< label << "]: " << yellow_pix_cnt << endl;
+        cout << "aspect_ratio_yellow[red]["<< label << "]: "<< aspect_ratio_yellow << endl;
         if(num_labels_yellow > 1 && yellow_pix_cnt >= YELLOW_PIX_TH && aspect_ratio_yellow >= MIN_YELLOW_ASPECT_RATIO && aspect_ratio_yellow <= MAX_YELLOW_ASPECT_RATIO){
           cv::rectangle(rgb, cv::Rect(left + img_left, top + img_top, width, height), cv::Scalar(0, 0, 255), 2); // 赤信号は赤い矩形
           // cv::rectangle(top_region, cv::Rect(left, top, width, height), cv::Scalar(0, 0, 255), 2);
@@ -244,8 +245,8 @@ void Recognition::extractYellowInBlob(Mat &rgb, int num_labels, const vector<int
         }
       }
       else{
-        // cout << "yellow_pix_cnt[green]["<< label << "]: " << yellow_pix_cnt << endl;
-        // cout << "aspect_ratio_yellow[green]["<< label << "]: "<< aspect_ratio_yellow << endl;
+        cout << "yellow_pix_cnt[green]["<< label << "]: " << yellow_pix_cnt << endl;
+        cout << "aspect_ratio_yellow[green]["<< label << "]: "<< aspect_ratio_yellow << endl;
         if(num_labels_yellow > 1 && yellow_pix_cnt >= YELLOW_PIX_TH && aspect_ratio_yellow >= MIN_YELLOW_ASPECT_RATIO && aspect_ratio_yellow <= MAX_YELLOW_ASPECT_RATIO)
         {
           cv::rectangle(rgb, cv::Rect(left + img_left, top + img_top, width, height), cv::Scalar(255, 0, 0), 2); // 青信号は青い矩形
@@ -398,7 +399,7 @@ void Recognition::onImageSubscribed(Image::SharedPtr img)
   camera_img = cv_img->image;
   /*** 信号認識処理 ***/
   run(camera_img);
-  // cv::imshow("camera_img", camera_img);
+  cv::imshow("camera_img", camera_img);
   // cv::imshow("bin red", bin_img_red);
   // cv::imshow("bin_green", bin_img_green);
   // cv::imshow("red_median", red_median);
@@ -407,7 +408,7 @@ void Recognition::onImageSubscribed(Image::SharedPtr img)
   // cv::imshow("green erode", green_erode);
   // cv::imshow("red dilate", red_dilate);
   // cv::imshow("green_dilate", green_dilate);
-  // cv::waitKey(1);
+  cv::waitKey(1);
 }
 
 /*** Recognitionクラスをコンポーネントとして登録 ***/
