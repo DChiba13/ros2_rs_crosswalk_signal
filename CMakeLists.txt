@@ -18,6 +18,8 @@ find_package(cv_bridge REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(ros2_rs_interfaces REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(PCL REQUIRED COMPONENT io)
 
 # 自作ライブラリの設定 (手動でライブラリとヘッダーパスを設定)
 set(RS_COMMON_LIB "/usr/local/lib/librs_common.so")
@@ -35,6 +37,7 @@ add_library(${PROJECT_NAME} SHARED
   src/check_hsv.cpp
   src/capture_cam_log.cpp
   src/log_img_pub.cpp
+  src/log_pcd_pub.cpp
 )
 
 # Include directories (rs_common ライブラリのヘッダーファイルのパスを含める)
@@ -46,6 +49,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME}
   rs_common
   stdc++fs
+  traffic_signal_reco_lib
 )
 
 ament_target_dependencies(${PROJECT_NAME} 
@@ -55,6 +59,7 @@ ament_target_dependencies(${PROJECT_NAME}
   rclcpp_components 
   ros2_rs_interfaces 
   fmt
+  pcl_conversions
 )
 
 rclcpp_components_register_nodes(${PROJECT_NAME} "crosswalk_signal::Recognition")
@@ -63,6 +68,7 @@ rclcpp_components_register_nodes(${PROJECT_NAME} "crosswalk_signal::ImageSubscri
 rclcpp_components_register_nodes(${PROJECT_NAME} "crosswalk_signal::HSVChecker")
 rclcpp_components_register_nodes(${PROJECT_NAME} "crosswalk_signal::CaptureCamLog")
 rclcpp_components_register_nodes(${PROJECT_NAME} "crosswalk_signal::LogImgPublisher")
+rclcpp_components_register_nodes(${PROJECT_NAME} "crosswalk_signal::LogPcdPublisher")
 
 # Install targets
 install(TARGETS ${PROJECT_NAME} 
@@ -87,6 +93,7 @@ install(DIRECTORY launch
 # includeディレクトリをincludeパスに追加
 include_directories(
   include
+  /home/chiba/workspace/cxx_ws/signal_reco/traffic_signal_reco_lib/lib/include
 )
 
 ament_package()

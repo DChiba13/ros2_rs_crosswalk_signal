@@ -14,12 +14,13 @@ def generate_launch_description():
         # LiDARなしで信号認識する場合
         ('ros2_rs_crosswalk_signal', 'launch/container.launch.py'),
         # ('ros2_rs_crosswalk_signal', 'launch/test_img_pub.launch.py'),
-        # ('ros2_rs_crosswalk_signal', 'launch/crosswalk_signal.launch.py'),
+        ('ros2_rs_crosswalk_signal', 'launch/crosswalk_signal.launch.py'),
         # ('ros2_rs_crosswalk_signal', 'launch/test_img_sub.launch.py'),
         # ('ros2_rs_crosswalk_signal', 'launch/test_light_sub.launch.py'),
-        ('ros2_rs_crosswalk_signal', 'launch/check_hsv.launch.py'),
+        # ('ros2_rs_crosswalk_signal', 'launch/check_hsv.launch.py'),
         # ('ros2_rs_crosswalk_signal', 'launch/capture_cam_log.launch.py'),
         ('ros2_rs_crosswalk_signal', 'launch/log_img_pub.launch.py'),
+        ('ros2_rs_crosswalk_signal', 'launch/log_pcd_pub.launch.py'),
 
         # LiDARありで信号認識する場合
         # ('ros2_rs_crosswalk_signal', 'launch/container.launch.py'),
