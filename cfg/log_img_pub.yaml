@@ -1,3 +1,4 @@
 log_img_pub:
   ros__parameters:
-    folder_path: "/home/chiba/share/signal_data/2023/2023/2023_07_15_11_11_55"
+    # folder_path: "/home/chiba/share/signal_data/2023/2023/2023_07_15_11_11_55"
+    folder_path: "/home/chiba/share/camera_lidar_data/2023_09_23_15_15_51/2023_09_23_15_15_51/camera1"

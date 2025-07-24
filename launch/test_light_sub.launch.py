@@ -9,7 +9,7 @@ def generate_launch_description():
         package='ros2_rs_crosswalk_signal', 
         executable='test_light_sub',        # ノードの実行可能ファイル名に変更
         name='test_light_sub',
-        parameters=[join(pkg_prefix, 'cfg/your_parameter_file.yaml')],  # 必要なパラメータファイルを指定
+        # parameters=[join(pkg_prefix, 'cfg/your_parameter_file.yaml')],  # 必要なパラメータファイルを指定
         remappings=[
                     ('/light_msg', '/light/msg'),
                 ],

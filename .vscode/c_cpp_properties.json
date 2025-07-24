@@ -44,7 +44,8 @@
                 "/opt/ros/humble/include/cv_bridge",
                 "/opt/ros/humble/include/rclcpp_components",
                 "/opt/ros/humble/include/rmw",
-                "/usr/include/pcl-1.12"
+                "/usr/include/pcl-1.12",
+                "/opt/ros/humble/include/class_loader"
             ],
             "name": "ROS",
             "intelliSenseMode": "gcc-x64",

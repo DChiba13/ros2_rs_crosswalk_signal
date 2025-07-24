@@ -13,9 +13,10 @@ def generate_launch_description():
                 package='ros2_rs_crosswalk_signal',
                 plugin='crosswalk_signal::Recognition',
                 name='crosswalk_signal',
-                parameters=[join(pkg_prefix, 'cfg/crosswalk_signal_parameters.yaml')],
+                # parameters=[join(pkg_prefix, 'cfg/crosswalk_signal_parameters.yaml')],
                 remappings=[
                     ('/camera1/image', '/camera1/image'),
+                    ('/lidar/points', '/lidar/points'), 
                     ('/light_msg', '/light/msg'),
                     ('/signal_image', '/signal_image'),
                 ],

@@ -58,9 +58,13 @@ namespace crosswalk_signal
 
     // === Processing ===
     void onImageSubscribed(Image::SharedPtr img);
-    void onPointcloudReceived(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
+    void onPointcloudSubscribed(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
+    void initTopic();
+    void convertPointCloudToLidarData(const sensor_msgs::msg::PointCloud2::SharedPtr& pointcloud, std::vector<LidarData>& lidar_data);
     void processIfReady();
     void cvImageToROSImage(const cv::Mat &src, Image &dst);
+    void publishResultImage(const cv::Mat &camera_img);
+    void publishSignalState(const string &signal_state);
     void SignalImagePublisher(Mat &camera_img);
   };
 } // namespace crosswalk_signal

@@ -49,7 +49,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME}
   rs_common
   stdc++fs
-  traffic_signal_reco_lib
+  traffic_signal_reco_core
 )
 
 ament_target_dependencies(${PROJECT_NAME} 
