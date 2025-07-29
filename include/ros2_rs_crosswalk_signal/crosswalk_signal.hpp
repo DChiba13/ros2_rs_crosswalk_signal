@@ -4,7 +4,7 @@
 // ROS2 includes
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/image.hpp>
-#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <sensor_msgs/msg/point_cloud.hpp>
 #include <ros2_rs_interfaces/msg/traffic_signal.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <mutex>
@@ -39,18 +39,19 @@ namespace crosswalk_signal
     ~Recognition();
 
   private:
+    std::unique_ptr<std::thread> thread_;
     // === Subscribers ===
     rclcpp::Subscription<Image>::SharedPtr sub_img_;
-    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr sub_pcd_;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud>::SharedPtr sub_pcd_;
 
     // === Publishers ===
     rclcpp::Publisher<TrafficSignal>::SharedPtr pub_signal_state_;
     rclcpp::Publisher<Image>::SharedPtr pub_result_image_;
 
     // === Data buffer ===
-    cv::Mat latest_image_;
+    sensor_msgs::msg::PointCloud::SharedPtr latest_pcd_;
+    Image::SharedPtr latest_image_;
     rclcpp::Time image_stamp_;
-    sensor_msgs::msg::PointCloud2::SharedPtr latest_pcd_;
     rclcpp::Time pcd_stamp_;
 
     // === Mutex ===
@@ -58,10 +59,11 @@ namespace crosswalk_signal
 
     // === Processing ===
     void onImageSubscribed(Image::SharedPtr img);
-    void onPointcloudSubscribed(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
+    void onPointcloudSubscribed(const sensor_msgs::msg::PointCloud::SharedPtr msg);
     void initTopic();
-    void convertPointCloudToLidarData(const sensor_msgs::msg::PointCloud2::SharedPtr& pointcloud, std::vector<LidarData>& lidar_data);
-    void processIfReady();
+    void convertPointCloudToLidarData(const sensor_msgs::msg::PointCloud::SharedPtr& pointcloud, std::vector<LidarData>& lidar_data);
+    void run();
+    void ROSImageToCVImage(const Image &src, cv::Mat &dst);
     void cvImageToROSImage(const cv::Mat &src, Image &dst);
     void publishResultImage(const cv::Mat &camera_img);
     void publishSignalState(const string &signal_state);

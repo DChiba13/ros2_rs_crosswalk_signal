@@ -1,7 +1,7 @@
 #include "ros2_rs_crosswalk_signal/crosswalk_signal.hpp"
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/msg/image.hpp>
-#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <sensor_msgs/msg/point_cloud.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <mutex>
 #include <memory>
@@ -12,27 +12,33 @@
 #include <traffic_signal_reco.hpp>  // ライブラリヘッダ
 
 using sensor_msgs::msg::Image;
-using sensor_msgs::msg::PointCloud2;
+using sensor_msgs::msg::PointCloud;
 using crosswalk_signal::Recognition;
 
 using namespace std;
 using namespace cv;
 using namespace signal_reco;
 
+// ライブラリインスタンス
+SignalReco signal_reco_;
+
 Recognition::Recognition(rclcpp::NodeOptions options) : Node("crosswalk_signal", options)
 {
   initTopic();
+  thread_ = std::make_unique<thread>(&Recognition::run, this);
   RCLCPP_INFO(this->get_logger(), "Recognition node initialized.");
 }
 
-Recognition::~Recognition() {}
+Recognition::~Recognition() {
+  thread_.release();
+}
 
 void Recognition::initTopic()
 {
   using std::placeholders::_1;
   // サブスクライバ
   sub_img_ = this->create_subscription<Image>("/camera1/image", 10, std::bind(&Recognition::onImageSubscribed, this, _1));
-  sub_pcd_ = this->create_subscription<PointCloud2>("/lidar/points", 10, std::bind(&Recognition::onPointcloudSubscribed, this, _1));
+  sub_pcd_ = this->create_subscription<PointCloud>("/lidar/points", 10, std::bind(&Recognition::onPointcloudSubscribed, this, _1));
   
   // パブリッシャ
   pub_result_image_ = this->create_publisher<Image>("/signal_image", 10);
@@ -42,44 +48,54 @@ void Recognition::initTopic()
 void Recognition::onImageSubscribed(const Image::SharedPtr msg)
 {
   std::lock_guard<std::mutex> lock(data_mutex_);
+  latest_image_ = msg;
+}
 
-  try {
-    auto cv_ptr = cv_bridge::toCvCopy(msg, msg->encoding);
-    latest_image_ = cv_ptr->image.clone();
-    image_stamp_ = msg->header.stamp;
-  } catch (cv_bridge::Exception & e) {
-    RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
+void Recognition::onPointcloudSubscribed(const PointCloud::SharedPtr msg)
+{
+  std::lock_guard<std::mutex> lock(data_mutex_);
+  latest_pcd_ = msg;
+}
+
+void Recognition::convertPointCloudToLidarData(const PointCloud::SharedPtr& pointcloud, std::vector<LidarData>& lidar_data)
+{
+  lidar_data.clear();
+
+  const auto& points = pointcloud->points;
+  const auto& channels = pointcloud->channels;
+
+  int num_points = points.size();
+  if (channels.size() < 2 || channels[0].values.size() != num_points || channels[1].values.size() != num_points) {
+    RCLCPP_WARN(this->get_logger(), "Invalid channel size in PointCloud");
     return;
   }
 
-  processIfReady();
-}
-
-void Recognition::onPointcloudSubscribed(const PointCloud2::SharedPtr msg)
-{
-  std::lock_guard<std::mutex> lock(data_mutex_);
-
-  latest_pcd_ = msg;
-  pcd_stamp_ = msg->header.stamp;
-
-  processIfReady();
-}
-
-void Recognition::convertPointCloudToLidarData(const PointCloud2::SharedPtr& pointcloud, std::vector<LidarData>& lidar_data)
-{
-  pcl::PointCloud<pcl::PointXYZI> pcl_cloud;
-  pcl::fromROSMsg(*pointcloud, pcl_cloud);
-
-  lidar_data.clear();
-  for (const auto& pt : pcl_cloud.points) {
-    pr::LidarData p;
-    p.x = pt.x;
-    p.y = pt.y;
-    p.z = pt.z;
-    p.reflectivity = pt.intensity;
-    p.range = std::sqrt(pt.x * pt.x + pt.y * pt.y + pt.z * pt.z);
-    lidar_data.push_back(p);
+  for (size_t i = 0; i < num_points; ++i) {
+    const auto& pt = points[i];
+    LidarData ld;
+    ld.x = pt.x;
+    ld.y = pt.y;
+    ld.z = pt.z;
+    ld.range = channels[0].values[i];
+    ld.reflectivity = channels[1].values[i];
+    lidar_data.push_back(ld);
   }
+}
+
+void Recognition::ROSImageToCVImage(const sensor_msgs::msg::Image &src, cv::Mat &dst)
+{
+  int cv_type;
+  if (src.encoding == "mono8") {
+    cv_type = CV_8UC1;
+  } else if (src.encoding == "bgr8") {
+    cv_type = CV_8UC3;
+  } else if (src.encoding == "mono16") {
+    cv_type = CV_16UC1;
+  } else {
+    RCLCPP_ERROR(this->get_logger(), "Unsupported image encoding: %s", src.encoding.c_str());
+    return;
+  }
+  dst = cv::Mat(src.height, src.width, cv_type, const_cast<unsigned char*>(src.data.data()), src.step).clone();
 }
 
 void Recognition::cvImageToROSImage(const cv::Mat &src, Image &dst)
@@ -119,25 +135,25 @@ void Recognition::publishSignalState(const string &signal_state)
   pub_signal_state_->publish(signal_msg);
 }
 
-void Recognition::processIfReady()
+void Recognition::run()
 {
-  // カメラ画像も点群もどちらも受信して初めて処理を行う
-  if (latest_image_.empty() || latest_pcd_ == nullptr) return;
-  // ライブラリインスタンス
-  SignalReco reco;
-  // 画像を設定
-  reco.src_camera_img = latest_image_;
-  // 点群変換
-  convertPointCloudToLidarData(latest_pcd_, reco.src_points);
-  // メイン処理
-  reco.loop_main();
-  // 結果画像をパブリッシュ
-  publishResultImage(reco.camera_img);
-  // 結果文字列をパブリッシュ
-  publishSignalState(reco.signal_state);
-  // 状態クリア（連続処理を避けるため）
-  latest_pcd_ = nullptr;
-  latest_image_ = cv::Mat();
+  rclcpp::Rate loop(20);
+  while (rclcpp::ok()) {
+    // カメラ画像も点群もどちらも受信して初めて処理を行う
+    if (!latest_image_ || latest_pcd_ == nullptr) {
+      loop.sleep();
+      continue;
+    }
+    ROSImageToCVImage(*latest_image_, signal_reco_.src_camera_img); // ROS ImageをOpenCV Matに変換
+    convertPointCloudToLidarData(latest_pcd_, signal_reco_.src_points); // 点群変換
+    signal_reco_.loop_main(); // メイン処理
+    publishResultImage(signal_reco_.camera_img); // 結果画像をパブリッシュ
+    publishSignalState(signal_reco_.signal_state); // 結果文字列をパブリッシュ
+    // 状態クリア（連続処理を避けるため）
+    latest_pcd_ = nullptr;
+    latest_image_ = nullptr;
+    loop.sleep();
+  }
 }
 
 /*** Recognitionクラスをコンポーネントとして登録 ***/
