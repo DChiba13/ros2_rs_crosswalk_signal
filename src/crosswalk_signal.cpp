@@ -43,6 +43,8 @@ void Recognition::initTopic()
   // パブリッシャ
   pub_result_image_ = this->create_publisher<Image>("/signal_image", 10);
   pub_signal_state_ = this->create_publisher<ros2_rs_interfaces::msg::TrafficSignal>("/light_msg", 10);
+  pub_range_image_ = this->create_publisher<Image>("/traffic_light/range_img", 10);
+  pub_ref_image_ = this->create_publisher<Image>("/traffic_light/ref_img", 10);
 }
 
 void Recognition::onImageSubscribed(const Image::SharedPtr msg)
@@ -125,6 +127,32 @@ void Recognition::publishResultImage(const cv::Mat &camera_img)
   pub_result_image_->publish(std::move(ros_img));
 }
 
+void Recognition::publishRangeImage(const cv::Mat &range_img)
+{
+  // ROS2 Imageメッセージを作成
+  auto ros_img = std::make_unique<Image>();
+  // cv::MatをROS2 Imageに変換
+  cvImageToROSImage(range_img, *ros_img);
+  // ヘッダー情報を設定
+  ros_img->header.frame_id = "range_img";
+  ros_img->header.stamp = range_img_stamp_;
+  // パブリッシュ
+  pub_range_image_->publish(std::move(ros_img));
+}
+
+void Recognition::publishReflectanceImage(const cv::Mat &ref_img)
+{
+  // ROS2 Imageメッセージを作成
+  auto ros_img = std::make_unique<Image>();
+  // cv::MatをROS2 Imageに変換
+  cvImageToROSImage(ref_img, *ros_img);
+  // ヘッダー情報を設定
+  ros_img->header.frame_id = "ref_img";
+  ros_img->header.stamp = ref_img_stamp_;
+  // パブリッシュ
+  pub_ref_image_->publish(std::move(ros_img));
+}
+
 void Recognition::publishSignalState(const string &signal_state)
 {
   // TrafficSignalメッセージを作成
@@ -148,6 +176,8 @@ void Recognition::run()
     convertPointCloudToLidarData(latest_pcd_, signal_reco_.src_points); // 点群変換
     signal_reco_.loop_main(); // メイン処理
     publishResultImage(signal_reco_.camera_img); // 結果画像をパブリッシュ
+    publishRangeImage(signal_reco_.lidar_img_range_fov); // 結果画像をパブリッシュ
+    publishReflectanceImage(signal_reco_.lidar_img_ref_fov); // 結果画像をパブリッシュ
     publishSignalState(signal_reco_.signal_state); // 結果文字列をパブリッシュ
     // 状態クリア（連続処理を避けるため）
     latest_pcd_ = nullptr;
