@@ -47,11 +47,15 @@ namespace crosswalk_signal
     // === Publishers ===
     rclcpp::Publisher<TrafficSignal>::SharedPtr pub_signal_state_;
     rclcpp::Publisher<Image>::SharedPtr pub_result_image_;
+    rclcpp::Publisher<Image>::SharedPtr pub_range_image_;
+    rclcpp::Publisher<Image>::SharedPtr pub_ref_image_;
 
     // === Data buffer ===
     sensor_msgs::msg::PointCloud::SharedPtr latest_pcd_;
     Image::SharedPtr latest_image_;
     rclcpp::Time image_stamp_;
+    rclcpp::Time range_img_stamp_;
+    rclcpp::Time ref_img_stamp_;
     rclcpp::Time pcd_stamp_;
 
     // === Mutex ===
@@ -66,6 +70,8 @@ namespace crosswalk_signal
     void ROSImageToCVImage(const Image &src, cv::Mat &dst);
     void cvImageToROSImage(const cv::Mat &src, Image &dst);
     void publishResultImage(const cv::Mat &camera_img);
+    void publishRangeImage(const cv::Mat &range_img);
+    void publishReflectanceImage(const cv::Mat &ref_img);
     void publishSignalState(const string &signal_state);
     void SignalImagePublisher(Mat &camera_img);
   };
