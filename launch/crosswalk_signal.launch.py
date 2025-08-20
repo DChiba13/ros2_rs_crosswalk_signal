@@ -20,7 +20,7 @@ def generate_launch_description():
                     ('/light_msg', '/light/msg'),
                     ('/signal_image', '/signal_image'),
                     ('/traffic_light/range_img', '/traffic_light/range_img'),
-                    ('/traffic_light/ref_img', '//traffic_light/ref_img'),
+                    ('/traffic_light/ref_img', '/traffic_light/ref_img'),
                 ],
                 extra_arguments=[{'use_intra_process_comms': True}]
             )
