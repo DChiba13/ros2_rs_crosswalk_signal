@@ -30,7 +30,7 @@ public:
     index_publisher_ = this->create_publisher<std_msgs::msg::Int32>("/log_sync/index", 10);
 
     publish_image();
-    timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&LogImgPublisher::timer_callback, this));
+    timer_ = this->create_wall_timer(std::chrono::milliseconds(500), std::bind(&LogImgPublisher::timer_callback, this));
   }
 
 private:
@@ -77,8 +77,8 @@ private:
     cv::Mat image = cv::imread(image_files_[current_image_idx_]);
     if (image.empty()) return;
 
-    cv::imshow("Image Display", image);
-    cv::waitKey(30);
+    // cv::imshow("Image Display", image);
+    // cv::waitKey(30);
 
     sensor_msgs::msg::Image img_msg;
     cvImage2ROSImage(image, img_msg);
@@ -89,14 +89,23 @@ private:
     index_publisher_->publish(index_msg);
   }
 
-  void next_image() { current_image_idx_ = (current_image_idx_ + 1) % image_files_.size(); publish_image(); }
-  void previous_image() { current_image_idx_ = (current_image_idx_ == 0) ? image_files_.size() - 1 : current_image_idx_ - 1; publish_image(); }
+  void next_image()
+  { 
+    current_image_idx_ = (current_image_idx_ + 1) % image_files_.size();
+    publish_image();
+  }
+  
+  void previous_image() {
+    current_image_idx_ = (current_image_idx_ == 0) ? image_files_.size() - 1 : current_image_idx_ - 1;
+    publish_image();
+  }
 
   void timer_callback()
   {
-    int key = cv::waitKey(30);
-    if (key == 'd') next_image();
-    else if (key == 'a') previous_image();
+    next_image();
+    // int key = cv::waitKey(30);
+    // if (key == 'd') next_image();
+    // else if (key == 'a') previous_image();
   }
 
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr publisher_;

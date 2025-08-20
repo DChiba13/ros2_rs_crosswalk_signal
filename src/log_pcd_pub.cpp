@@ -1,12 +1,12 @@
 #include <rclcpp/rclcpp.hpp>
-#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <sensor_msgs/msg/point_cloud.hpp>
 #include <std_msgs/msg/int32.hpp>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
-#include <pcl_conversions/pcl_conversions.h>
 #include <filesystem>
 #include <vector>
 #include <string>
+#include <cmath>
 
 namespace crosswalk_signal {
 
@@ -28,7 +28,7 @@ public:
       return;
     }
 
-    publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/lidar/points", 10);
+    publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud>("/lidar/points", 10);
     index_subscriber_ = this->create_subscription<std_msgs::msg::Int32>(
       "/log_sync/index", 10,
       std::bind(&LogPcdPublisher::on_index_received, this, std::placeholders::_1));
@@ -59,10 +59,33 @@ private:
       return;
     }
 
-    sensor_msgs::msg::PointCloud2 ros_msg;
-    pcl::toROSMsg(cloud, ros_msg);
+    sensor_msgs::msg::PointCloud ros_msg;
     ros_msg.header.frame_id = "lidar";
     ros_msg.header.stamp = this->now();
+
+    ros_msg.points.reserve(cloud.points.size());
+
+    // channels: range と reflectivity
+    ros_msg.channels.resize(2);
+    ros_msg.channels[0].name = "range";
+    ros_msg.channels[0].values.reserve(cloud.points.size());
+    ros_msg.channels[1].name = "reflectivity";
+    ros_msg.channels[1].values.reserve(cloud.points.size());
+
+    for (const auto &pt : cloud.points) {
+      geometry_msgs::msg::Point32 p;
+      p.x = pt.x;
+      p.y = pt.y;
+      p.z = pt.z;
+      ros_msg.points.push_back(p);
+
+      // range = sqrt(x^2 + y^2 + z^2)
+      float range = std::sqrt(pt.x * pt.x + pt.y * pt.y + pt.z * pt.z);
+      ros_msg.channels[0].values.push_back(range);
+
+      // reflectivity = intensity
+      ros_msg.channels[1].values.push_back(pt.intensity);
+    }
 
     publisher_->publish(ros_msg);
     RCLCPP_INFO(this->get_logger(), "Published (index %d): %s", idx, pcd_files_[idx].c_str());
@@ -70,7 +93,7 @@ private:
 
   std::string folder_path_;
   std::vector<std::string> pcd_files_;
-  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud>::SharedPtr publisher_;
   rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr index_subscriber_;
 };
 
