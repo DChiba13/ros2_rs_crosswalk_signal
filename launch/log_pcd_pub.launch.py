@@ -16,7 +16,8 @@ def generate_launch_description():
                 name='log_pcd_pub',
                 parameters=[join(pkg_prefix, 'cfg/log_pcd_pub.yaml')],
                 remappings=[
-                    ('/lidar/points', '/pandar40/points'),
+                    # ('/lidar/points', '/pandar40/points'),
+                    ('/lidar/points', '/pandar40/points_test'),
                 ],
                 extra_arguments=[{'use_intra_process_comms': True}]
             )

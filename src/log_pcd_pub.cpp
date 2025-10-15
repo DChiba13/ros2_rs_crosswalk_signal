@@ -88,7 +88,7 @@ private:
     }
 
     publisher_->publish(ros_msg);
-    RCLCPP_INFO(this->get_logger(), "Published (index %d): %s", idx, pcd_files_[idx].c_str());
+    // RCLCPP_INFO(this->get_logger(), "Published (index %d): %s", idx, pcd_files_[idx].c_str());
   }
 
   std::string folder_path_;

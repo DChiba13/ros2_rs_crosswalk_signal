@@ -1,3 +1,6 @@
 log_pcd_pub:
   ros__parameters:
-    folder_path: "/home/chiba/share/camera_lidar_data/2023_09_23_15_15_51/2023_09_23_15_15_51/pandar_xt32"
+    # folder_path: "/home/chiba/share/camera_lidar_data/2023_09_23_15_15_51/2023_09_23_15_15_51/pandar_xt32"
+    # folder_path: "/home/revast/log/2023_11_04_15_10_00/pandar_xt32"
+    folder_path: "/home/revast/log/2025_10_05/traffic_signal/2025_10_05_13_34_33_manual/pandar40"
+    

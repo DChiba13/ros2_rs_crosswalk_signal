@@ -18,7 +18,8 @@ def generate_launch_description():
                 name='log_img_pub',  # ノード名
                 parameters=[join(pkg_prefix, 'cfg/log_img_pub.yaml')],
                 remappings=[
-                    ('/camera1/image', '/camera1/image'),
+                    # ('/camera1/image', '/camera1/image'),
+                    ('/camera1/image', '/camera1/image_test'),
                 ],
                 extra_arguments=[{'use_intra_process_comms': True}]
             )
