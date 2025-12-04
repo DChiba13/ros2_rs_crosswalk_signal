@@ -40,17 +40,17 @@ namespace crosswalk_signal
 
   private:
     std::unique_ptr<std::thread> thread_;
-    // === Subscribers ===
+    /***  === Subscribers ===  ***/
     rclcpp::Subscription<Image>::SharedPtr sub_img_;
     rclcpp::Subscription<sensor_msgs::msg::PointCloud>::SharedPtr sub_pcd_;
 
-    // === Publishers ===
+    /***  === Publishers ===  ***/
     rclcpp::Publisher<TrafficSignal>::SharedPtr pub_signal_state_;
     rclcpp::Publisher<Image>::SharedPtr pub_result_image_;
     rclcpp::Publisher<Image>::SharedPtr pub_range_image_;
     rclcpp::Publisher<Image>::SharedPtr pub_ref_image_;
 
-    // === Data buffer ===
+    /***  === Data buffer ===  ***/
     sensor_msgs::msg::PointCloud::SharedPtr latest_pcd_;
     Image::SharedPtr latest_image_;
     rclcpp::Time image_stamp_;
@@ -58,10 +58,10 @@ namespace crosswalk_signal
     rclcpp::Time ref_img_stamp_;
     rclcpp::Time pcd_stamp_;
 
-    // === Mutex ===
+    /***  === Mutex ===  ***/
     std::mutex data_mutex_;
 
-    // === Processing ===
+    /***  === Processing ===  ***/
     void onImageSubscribed(Image::SharedPtr img);
     void onPointcloudSubscribed(const sensor_msgs::msg::PointCloud::SharedPtr msg);
     void initTopic();
@@ -75,6 +75,6 @@ namespace crosswalk_signal
     void publishSignalState(const string &signal_state);
     void SignalImagePublisher(Mat &camera_img);
   };
-} // namespace crosswalk_signal
+} /* namespace crosswalk_signal */
 
-#endif // ROS2_RS_CROSSWALK_SIGNAL_COMMON_INCLUDES_HPP_
+#endif /* ROS2_RS_CROSSWALK_SIGNAL_COMMON_INCLUDES_HPP_ */
